@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Diji-Card | Dijital Kimlik</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background: var(--card); padding: 40px; border-radius: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); width: 100%; max-width: 400px; border: 1px solid #334155; text-align: center; }
+        h2 { color: var(--accent); margin-bottom: 30px; font-weight: 700; letter-spacing: -1px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; margin-left: 5px; }
+        input { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; outline: none; margin-top: 5px; transition: 0.3s; }
+        input:focus { border-color: var(--accent); }
+        button { width: 100%; padding: 16px; background: var(--accent); color: var(--bg); border: none; border-radius: 15px; font-weight: 700; cursor: pointer; margin-top: 20px; font-size: 14px; transition: 0.3s; }
+        button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
+        
+        #resultArea { display: none; margin-top: 30px; animation: fadeInUp 0.5s ease; }
+        #qrImg { background: white; padding: 15px; border-radius: 20px; box-shadow: 0 0 30px rgba(56, 189, 248, 0.2); }
+        .info-display { background: rgba(15, 23, 42, 0.6); padding: 20px; border-radius: 20px; margin-top: 20px; text-align: left; border: 1px solid #334155; }
+        .info-row { margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; }
+        .info-row b { color: var(--accent); width: 80px; display: inline-block; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>DIJI-CARD</h2>
+    
+    <div class="form-group">
+        <label>Ad Soyad</label>
+        <input type="text" id="name" placeholder="Ayşenaz Altın">
+    </div>
+    
+    <div class="form-group">
+        <label>Meslek</label>
+        <input type="text" id="job" placeholder="Elektronik Mühendisi">
+    </div>
+
+    <div class="form-group">
+        <label>Telefon</label>
+        <input type="tel" id="phone" placeholder="05XX XXX XX XX">
+    </div>
+
+    <div class="form-group">
+        <label>E-posta</label>
+        <input type="email" id="email" placeholder="mail@ornek.com">
+    </div>
+
+    <button onclick="olustur()">PROFESYONEL KOD OLUŞTUR</button>
+
+    <div id="resultArea">
+        <div id="qrPlaceholder"></div>
+        
+        <div class="info-display">
+            <div style="font-size: 18px; font-weight: 700; margin-bottom: 10px;" id="dName"></div>
+            <div class="info-row"><b>Meslek:</b> <span id="dJob"></span></div>
+            <div class="info-row"><b>Telefon:</b> <span id="dPhone"></span></div>
+            <div class="info-row"><b>E-posta:</b> <span id="dMail"></span></div>
+        </div>
+        <p style="font-size: 10px; color: #64748b; margin-top: 15px;">Kodu okutan kişi bilgilerinizi rehberine ekleyebilir.</p>
+    </div>
+</div>
+
+<script>
+    function olustur() {
+        const name = document.getElementById("name").value;
+        const job = document.getElementById("job").value;
+        const phone = document.getElementById("phone").value;
+        const email = document.getElementById("email").value;
+
+        if(!name || !job || !phone) {
+            alert("Lütfen temel alanları doldurun!");
+            return;
+        }
+
+        // vCard Formatı: Bu format telefonlarda çok şık bir kartvizit açar
+        const vCard = `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+TITLE:${job}
+TEL:${phone}
+EMAIL:${email}
+END:VCARD`;
+
+        // QR Servisi
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(vCard)}`;
+        
+        document.getElementById("qrPlaceholder").innerHTML = `<img src="${qrUrl}" id="qrImg" alt="QR Kod">`;
+
+        // Ekranda göster
+        document.getElementById("resultArea").style.display = "block";
+        document.getElementById("dName").innerText = name;
+        document.getElementById("dJob").innerText = job;
+        document.getElementById("dPhone").innerText = phone;
+        document.getElementById("dMail").innerText = email;
+    }
+</script>
+
+</body>
+</html>
